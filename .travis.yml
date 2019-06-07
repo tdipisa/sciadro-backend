@@ -8,7 +8,11 @@ services:
   - docker
 
 script:
-  - docker-compose -f docker-compose-test.yml up --build --abort-on-container-exit
+  - token=3f2acdd9-ff19-4b78-8f75-94f07a1f2837
+  - ci_env="bash <(curl -s https://codecov.io/env)"
+  - ci_post_cov="bash <(curl -s https://codecov.io/bash) -t $token"
+#  - docker-compose -f docker-compose-test.yml up --build --abort-on-container-exit
+  - docker-compose -f docker-compose-test.yml run -d --build --abort-on-container-exit test-api --entrypoint /bin/bash -c "$ci_env && pytest && coverage run -m pytest && $ci_post_cov"
 
 # Push the results back to codecov
 after_success:
