@@ -1,5 +1,15 @@
 language: python
+
+# Install the codecov pip dependency
+install:
+  - pip install codecov
+
 services:
   - docker
+
 script:
   - docker-compose -f docker-compose-test.yml up --build --abort-on-container-exit
+
+# Push the results back to codecov
+after_success:
+  - codecov
